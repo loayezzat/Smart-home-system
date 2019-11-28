@@ -9,23 +9,24 @@
 #include "manager.h"
 #include "DIO_int.h" 
 #include "LCD_int.h"
+
+extern system_state ; 
+
 int main(){
 	
 	u8 value ; 
 	DIO_voidInit() ;
 	LCD_voidInit () ;
 
-	/*LCD_voidDisplayString("Welcome"); 
-	_delay_ms(1000);
-	LCD_voidClearScreen();*/
-	
+
 	system_init () ; /*initiating the system state */
 
 	while(1)
 	{
-	value = KeyPad_u8GetPressedKey() ;
+	value = KeyPad_u8GetPressedKey() ; /*Serving the Keypad*/
 	if (value != 255) system_manage(value) ; /*If key is pressed*/
-	_delay_ms(200) ; 
+	if (system_state == STATE_READINGS ) screen_readings_refresh() ; 
+	_delay_ms(250) ; 
 	}
 
 

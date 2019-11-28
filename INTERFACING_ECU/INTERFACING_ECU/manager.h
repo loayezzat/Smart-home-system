@@ -7,20 +7,18 @@
 
 #ifndef MANAGER_H_
 #define MANAGER_H_
+#define F_CPU 1000000UL
 
 #include "LCD_int.h"
 #include "std_types.h"
 #include <util/delay.h>
-/*Defining system states*/
 
-#define STATE_INIT 0 
-#define STATE_SHOW_DATA 1
-
-#define STATE_LOGIN 4
-#define STATE_SETTINGS 5
+#define STATE_READINGS 0
+#define STATE_LOGIN    1
+#define STATE_MANUAL   2
 
 void system_init (void ) ;
 void system_manage (u8 key_value) ; 
-
+void screen_readings_refresh (void) ;
 
 #endif /* MANAGER_H_ */

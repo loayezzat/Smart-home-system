@@ -149,9 +149,49 @@ void LCD_voidGoToRowColumn(u8 row,u8 col)
 		case 1:
 				Address=col+0x40;
 				break;
+		default: Address=col;
 
 	}
 	/* to write to a specific address in the LCD
 	 * we need to apply the corresponding command 0b10000000+Address */
 	LCD_voidSendCommand(Address | SET_CURSOR_LOCATION);
 }
+
+void LCD_voidSendInt (const s32 num )
+ {
+	 char temp_char ;
+	 char buffer[16] ;
+	 char count, i ;
+	 s32  temp_num = num ;
+	 if (num == 0 )
+	 {
+		 LCD_voidDisplayCharacter('0') ;
+		 return ;
+	 }else
+	 {
+		 if (temp_num < 0)
+		 	 {
+			 	 temp_num = temp_num * (-1) ;
+			 	 	 LCD_voidDisplayCharacter('-') ;
+		 	 }
+		 count = 0 ;
+		 /*this loop to extract no. from least significant digit to the most significant
+		  * i.e. buffer[0] contain the LSD */
+		 while (temp_num !=0)
+		 {
+			 temp_char = temp_num%10 ; //extracting the least significant digit
+			 temp_char += 48 ; //converting the digit to its ASCII representation
+			 buffer[count] = temp_char ;
+			 count++ ;
+			 temp_num= temp_num/10 ;
+		 }
+
+
+		 for (i = count  ; i > 0; i--)
+		 {
+			LCD_voidDisplayCharacter(buffer[i-1]) ;
+
+		 }
+	 }
+ }
+

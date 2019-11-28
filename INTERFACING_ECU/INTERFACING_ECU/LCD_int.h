@@ -10,5 +10,5 @@ void LCD_voidDisplayString(const u8 *Str);
 void LCD_voidClearScreen(void);
 void LCD_voidDisplayStringRowColumn(u8 row,u8 col,const u8 *Str);
 void LCD_voidGoToRowColumn(u8 row,u8 col);
-
+void LCD_voidSendInt (const s32 num ) ;
 #endif /* LCD_INT_H_ */

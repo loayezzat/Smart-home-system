@@ -6,29 +6,37 @@
  */ 
 #include "manager.h"
 
-static u8 system_state = STATE_INIT ; 
+u8 system_state = STATE_READINGS ; 
+static u8 readingToshow = 3 ; 
+
+u8 reading_temp = 1 ; 
+u8 reading_PIR  = 0 ; 
+u8 reading_LDR = 5 ; 
+u8 reading_LED = 1 ; 
+u8 reaing_motor_fan =50 ; 
+u8 reading_door = 1 ; 
+
+
 static u8 entered_password [10] ; 
 static const u8 system_password[10] = "1234" ; 
 static u8 pw_id = 0 ; 
 static u8 pass_tries = 0 ;
 
-static void system_show_data (u8 key_v) ; /*not completed yet */
-static void system_init_loginState (void) ; /*not implemented yet */
-static void check_password (void) ;
+
+
+static void system_init_loginState (void) ; 
+static u8 check_password (void) ;
+
+
+
 //static void wrong_password_alarm (void) ;
 //static void system_settings_init (void) ;
 
 void system_init (void ) 
 {
-	system_state = STATE_INIT ; 
-	LCD_voidClearScreen();		/*Go to the beginning of the first line */
-	LCD_voidDisplayString("1:Temp");
-	LCD_voidGoToRowColumn(0,8) ;/*Go to the middle of the first line */
-	LCD_voidDisplayString("2:Pump");
-	LCD_voidGoToRowColumn(1,0) ;/*Go to the beginning of the second line */
-	LCD_voidDisplayString("3:Tank");
-	LCD_voidGoToRowColumn(1,8) ;/*Go to the middle of the second line */
-	LCD_voidDisplayString("4:config");
+	system_state = STATE_READINGS ; 
+	readingToshow = 1 ;
+
 }
 
 void system_manage (u8 key_value) 
@@ -40,17 +48,22 @@ void system_manage (u8 key_value)
 	}else
 	{
 
-		if (system_state == STATE_INIT)		// managing main(initial) frame
+		if (system_state == STATE_READINGS)		// managing main(initial) frame
 		{
-			if (key_value == '1'  || key_value == '2' ||  key_value == '3')
+			if (key_value == '6')
 			{
-				system_state = STATE_SHOW_DATA ; 
-				system_show_data (key_value) ;
-
+				if (readingToshow == 6 )  readingToshow = 1 ; /*to ensure looping within the six readings*/ 
+				else readingToshow++ ; 
+				
 			}else if (key_value == '4')
 			{
-				system_state = STATE_LOGIN ;
+				if (readingToshow == 1 )  readingToshow = 6 ; /*to ensure looping within the six readings*/
+				else readingToshow-- ;
 				
+				
+			}else if (key_value == '1')
+			{
+				system_state = STATE_LOGIN ; 
 				system_init_loginState () ;		
 			}
 		
@@ -67,17 +80,13 @@ void system_manage (u8 key_value)
 			{
 				 
 				entered_password[pw_id] = 0 ;  /*terminating the password string*/
-				check_password() ;
+				check_password(); 
 			
 			}
 		
 		
 		}
-		else if (system_state == STATE_SHOW_DATA)
-		{
-			/*do nothing*/
-			/*Requires no more user interaction unless the reset to main frame which is already checked */
-		}
+
 		
 	
 	}
@@ -87,14 +96,22 @@ static void system_init_loginState (void)
 {
 	
 	  LCD_voidClearScreen();
-	  LCD_voidDisplayString("Enter Pass try:");
-	  LCD_voidDisplayCharacter(pass_tries + '1') ; 
-	  LCD_voidGoToRowColumn(1,0) ;
+	  if (pass_tries < 3 )
+	  {
+		LCD_voidDisplayString("Enter Pass try:");
+		LCD_voidDisplayCharacter(pass_tries + '1') ;
+		LCD_voidGoToRowColumn(1,0) ;
+	
+	  }else 
+	  {
+		 LCD_voidDisplayString("You cannot enter");
+	  }
+
 	  pw_id = 0 ;
 	  
 }
 
-static void check_password (void)
+static u8 check_password (void)
 {
 	
 	
@@ -117,26 +134,29 @@ static void check_password (void)
 	}
 	
 	
-	if (pass_validity == 1 ) {
-		/*system_state = STATE_SETTINGS ; 
-		system_settings_init() ;*/
+	if (pass_validity == 1 )
+	{
+		pass_tries = 0 ;
 		LCD_voidClearScreen();
-		LCD_voidDisplayString("Login successful"); 
+		LCD_voidDisplayString("Login successful");
+		return 1 ; 
 	}else
 	{
-		if (pass_tries >= 3 )
-		{
+			if (pass_tries >= 3 )
+			{
 			
-			//wrong_password_alarm () ;
-			LCD_voidClearScreen();
-			LCD_voidDisplayString("wrong pass alarm on");
-		}else 
-		{
-			LCD_voidClearScreen();
-			LCD_voidDisplayString("give another try");
-			_delay_ms(1000) ; 
-			system_init_loginState() ; /*give another try*/
-		}
+				//wrong_password_alarm () ;
+				LCD_voidClearScreen();
+				LCD_voidDisplayString("Wrong pass alarm on");
+				return 0 ; 
+			}else 
+			{
+				LCD_voidClearScreen();
+				LCD_voidDisplayString("Give another try");
+				_delay_ms(1000) ; 
+				system_init_loginState() ; /*give another try*/
+				return 2 ; 
+			}
 	}
 	
 	
@@ -145,16 +165,54 @@ static void check_password (void)
 
 
 
-static void system_show_data (u8 key_v) {
-	switch (key_v){
-		case  '1' : LCD_voidClearScreen() ; 
-					LCD_voidDisplayString("showing temp");
-					break ;
-		case  '2' : LCD_voidClearScreen() ;
-					LCD_voidDisplayString("showing pump");
-					break ;
-		case  '3' : LCD_voidClearScreen() ;
-					LCD_voidDisplayString("showing tank");
-					break ;		
+void screen_readings_refresh (void) 
+{
+	
+	switch (readingToshow)
+	{
+		case 1 : LCD_voidClearScreen();
+				 LCD_voidDisplayString("TEMPRATURE");
+				 LCD_voidGoToRowColumn(1,8) ; 
+				 LCD_voidSendInt(reading_temp) ; 
+				 LCD_voidDisplayString(" C"); 
+				 break ; 
+				 
+		case 2 : LCD_voidClearScreen();
+				 LCD_voidDisplayString("PIR SENSOR");
+			 	 LCD_voidGoToRowColumn(1,0) ;
+				 if (reading_PIR == 0 ) LCD_voidDisplayString("Object detected");
+				 else LCD_voidDisplayString("No Objects");
+				 break ;
+		
+		
+		case 3 :LCD_voidClearScreen();
+				LCD_voidDisplayString("LDR SENSOR");
+				LCD_voidGoToRowColumn(1,8) ;
+				LCD_voidSendInt(reading_LDR) ;
+				LCD_voidDisplayString(" %");
+				break ;
+		
+		case 4 :LCD_voidClearScreen();
+				LCD_voidDisplayString("LED STATE");
+				LCD_voidGoToRowColumn(1,12) ;
+				if (reading_LED == 0 ) LCD_voidDisplayString("OFF");
+				else LCD_voidDisplayString("ON");
+				break ;
+		
+		case 5 :LCD_voidClearScreen();
+				LCD_voidDisplayString("Fan Speed");
+				LCD_voidGoToRowColumn(1,8) ;
+				LCD_voidSendInt(reaing_motor_fan) ;
+				LCD_voidDisplayString(" %");
+				break ;
+		
+		case 6 :LCD_voidClearScreen();
+				LCD_voidDisplayString("Door State");
+				LCD_voidGoToRowColumn(1,8) ;
+				if (reading_door == 0 ) LCD_voidDisplayString("OFF");
+				else LCD_voidDisplayString("ON");
+				break ;
+		
+	
 	}
 }
