@@ -3,14 +3,16 @@
  *
  *  Author: Loay
  */ 
-
+#define  F_CPU 1000000UL
 #include "std_types.h"
 #include <util/delay.h>
 #include "manager.h"
 #include "DIO_int.h" 
 #include "LCD_int.h"
+#include "comm_manager.h"
+#include "KeyPad_int.h"
 
-extern system_state ; 
+extern u8 system_state ; 
 
 int main(){
 	
@@ -18,9 +20,11 @@ int main(){
 	DIO_voidInit() ;
 	LCD_voidInit () ;
 
-
+	sei() ; 
 	system_init () ; /*initiating the system state */
-
+	initComm() ;
+	
+	 
 	while(1)
 	{
 	value = KeyPad_u8GetPressedKey() ; /*Serving the Keypad*/

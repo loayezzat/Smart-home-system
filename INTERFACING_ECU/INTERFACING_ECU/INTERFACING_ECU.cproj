@@ -120,6 +120,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="comm_manager.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="comm_manager.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DIO_config.h">
       <SubType>compile</SubType>
     </Compile>
@@ -166,6 +172,18 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="std_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UART_config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UART_int.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UART_priv.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UART_prog.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="utils.h">
