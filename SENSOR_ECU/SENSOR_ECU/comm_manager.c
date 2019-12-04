@@ -8,6 +8,7 @@
  */ 
 #include "comm_manager.h"
 
+
  u8 receiveBuffer [BUFFER_SIZE] ; 
  u8 transmittBuffer [BUFFER_SIZE] ;
  
@@ -21,11 +22,12 @@ static u8 transmittState = 1 ; /*This will hold (0) if we currently transmitting
 
 static void receive_byte (void) ; 
 static void transmitt_byte (void) ;
-static void serveDataPacket (void ) ;
 
 
+static void (*VOID_serveReceivedPacket)( void ) = NULL ;
 
 void initComm(void) {
+	
 	UART_voidInit() ; 
 	receiveID = 0 ;
 	transmittID = 0 ;
@@ -41,19 +43,19 @@ void receive_byte (void) /*This function will be executed if a receive interrupt
 	receiveBuffer[receiveID] = UART_u8GetDataRegister() ; 
 	if (receiveBuffer[receiveID] == EOP)
 	{
-		serveDataPacket () ;	/*serve data packet function*/
+		VOID_serveReceivedPacket () ;	/*serve data packet function*/
 		receiveID = 0 ;
 	}else {
 		receiveID++ ;
 	}
 }
 
-u8 transmitt_available (void )
+u8 comm_transmitt_available (void )
 {
 	return transmittState ;
 }
 
-void transmitt_packet (u8 *dataPacket)
+void comm_transmitt_packet (u8 *dataPacket)
 {
 	u8 i = 0 ;
 	transmittState = 0 ;
@@ -68,7 +70,6 @@ void transmitt_packet (u8 *dataPacket)
 	
 	
 }
-
 
 static void transmitt_byte (void) 
 {
@@ -85,7 +86,7 @@ static void transmitt_byte (void)
 }
 
 
-static void serveDataPacket (void ) 
+ void comm_set_ReceivedPacketFunction (void (*f_ptr)( void ) ) 
 {
-	
+	VOID_serveReceivedPacket = f_ptr ; 
 }

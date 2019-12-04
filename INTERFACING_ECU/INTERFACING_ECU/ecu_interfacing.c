@@ -21,7 +21,8 @@ int main(){
 	LCD_voidInit () ;
 
 	sei() ; 
-	system_init () ; /*initiating the system state */
+	system_init () ;
+	
 	initComm() ;
 	
 	 

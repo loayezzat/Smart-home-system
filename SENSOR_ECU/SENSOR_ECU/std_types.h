@@ -1,6 +1,11 @@
 #ifndef std_types_H
 #define std_types_H
 
+#ifndef NULL
+#define NULL ((void*) 0)
+#endif
+
+
 typedef unsigned char u8;
 typedef unsigned short int u16;
 typedef unsigned long int u32;

@@ -6,16 +6,13 @@
  */ 
 #include "manager.h"
 
-u8 system_state = STATE_READINGS ; 
-static u8 readingToshow = 3 ; 
+u8 system_state  ; 
+static u8 readingToshow  ; 
 
-u8 reading_temp = 1 ; 
-u8 reading_PIR  = 0 ; 
-u8 reading_LDR = 5 ; 
-u8 reading_LED = 1 ; 
-u8 reaing_motor_fan =50 ; 
-u8 reading_door = 1 ; 
 
+extern u8 receiveBuffer [BUFFER_SIZE] ;
+extern u8 transmittBuffer [BUFFER_SIZE] ;
+u8 temp , ldr , led , pir , door , fan ;
 
 static u8 entered_password [10] ; 
 static const u8 system_password[10] = "1234" ; 
@@ -26,16 +23,17 @@ static u8 pass_tries = 0 ;
 
 static void system_init_loginState (void) ; 
 static u8 check_password (void) ;
-
+static void system_serveReceivedPacket(void) ;
 
 
 //static void wrong_password_alarm (void) ;
-//static void system_settings_init (void) ;
+
 
 void system_init (void ) 
 {
 	system_state = STATE_READINGS ; 
 	readingToshow = 1 ;
+	comm_set_ReceivedPacketFunction(system_serveReceivedPacket) ;
 
 }
 
@@ -165,6 +163,8 @@ static u8 check_password (void)
 
 
 
+
+
 void screen_readings_refresh (void) 
 {
 	
@@ -173,14 +173,14 @@ void screen_readings_refresh (void)
 		case 1 : LCD_voidClearScreen();
 				 LCD_voidDisplayString("TEMPRATURE");
 				 LCD_voidGoToRowColumn(1,8) ; 
-				 LCD_voidSendInt(reading_temp) ; 
+				 LCD_voidSendInt(temp) ; 
 				 LCD_voidDisplayString(" C"); 
 				 break ; 
 				 
 		case 2 : LCD_voidClearScreen();
 				 LCD_voidDisplayString("PIR SENSOR");
 			 	 LCD_voidGoToRowColumn(1,0) ;
-				 if (reading_PIR == 0 ) LCD_voidDisplayString("Object detected");
+				 if (pir == 0 ) LCD_voidDisplayString("Object detected");
 				 else LCD_voidDisplayString("No Objects");
 				 break ;
 		
@@ -188,31 +188,49 @@ void screen_readings_refresh (void)
 		case 3 :LCD_voidClearScreen();
 				LCD_voidDisplayString("LDR SENSOR");
 				LCD_voidGoToRowColumn(1,8) ;
-				LCD_voidSendInt(reading_LDR) ;
+				LCD_voidSendInt(ldr) ;
 				LCD_voidDisplayString(" %");
 				break ;
 		
 		case 4 :LCD_voidClearScreen();
 				LCD_voidDisplayString("LED STATE");
 				LCD_voidGoToRowColumn(1,12) ;
-				if (reading_LED == 0 ) LCD_voidDisplayString("OFF");
+				if (led == 0 ) LCD_voidDisplayString("OFF");
 				else LCD_voidDisplayString("ON");
 				break ;
 		
 		case 5 :LCD_voidClearScreen();
 				LCD_voidDisplayString("Fan Speed");
 				LCD_voidGoToRowColumn(1,8) ;
-				LCD_voidSendInt(reaing_motor_fan) ;
+				LCD_voidSendInt(fan) ;
 				LCD_voidDisplayString(" %");
 				break ;
 		
 		case 6 :LCD_voidClearScreen();
 				LCD_voidDisplayString("Door State");
 				LCD_voidGoToRowColumn(1,8) ;
-				if (reading_door == 0 ) LCD_voidDisplayString("OFF");
+				if (door == 0 ) LCD_voidDisplayString("OFF");
 				else LCD_voidDisplayString("ON");
 				break ;
 		
 	
 	}
+}
+
+
+
+
+
+static void system_serveReceivedPacket(void) 
+{
+	if (receiveBuffer[0] == 'd') /*Data Packet*/
+	{
+		 temp = receiveBuffer[1] ;
+		 ldr  = receiveBuffer[2] ;
+		 led  = receiveBuffer[3] ;
+		 pir  = receiveBuffer[4] ;
+		 door = receiveBuffer[5] ;
+		 fan  = receiveBuffer[6] ;
+	}
+	
 }

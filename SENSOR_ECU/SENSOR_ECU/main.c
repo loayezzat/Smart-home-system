@@ -25,15 +25,16 @@ int main(void)
     {
 		_delay_ms(500); 
 		temp ++ ; led ++ ; fan++ ; 
-		while (transmitt_available())
+		while (comm_transmitt_available())
 		{
 			PORTA++ ; 
 			generate_dataPacket() ;
-			transmitt_packet(data_packet) ; 
+			comm_transmitt_packet(data_packet) ; 
 		}
 		
     }
 }
+
 
 void generate_dataPacket(void)
 {
@@ -47,6 +48,5 @@ void generate_dataPacket(void)
 	
 	data_packet[7] = '#' ;
 	data_packet[8] = 0 ;
-	
 	
 }
