@@ -1,4 +1,5 @@
-main.d main.o: .././main.c \
+TIMER0_prog.d TIMER0_prog.o: .././TIMER0_prog.c .././std_types.h \
+ .././utils.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h \
@@ -14,8 +15,12 @@ main.d main.o: .././main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
- .././comm_manager.h .././UART_int.h .././STD_TYPES.h .././std_types.h \
- .././ADC_int.h .././utils.h .././TIMER0_int.h .././TIMER0_priv.h
+ .././TIMER0_priv.h .././TIMER0_config.h .././TIMER0_int.h \
+ .././STD_TYPES.h
+
+.././std_types.h:
+
+.././utils.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h:
 
@@ -47,18 +52,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
 
-.././comm_manager.h:
+.././TIMER0_priv.h:
 
-.././UART_int.h:
-
-.././STD_TYPES.h:
-
-.././std_types.h:
-
-.././ADC_int.h:
-
-.././utils.h:
+.././TIMER0_config.h:
 
 .././TIMER0_int.h:
 
-.././TIMER0_priv.h:
+.././STD_TYPES.h:
